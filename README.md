@@ -1,5 +1,7 @@
-# Simple PHP Git deploy script
+# PHP Git deploy script
 _Automatically deploy the code using PHP and Git._
+
+Can deploy through console or webbrowser call, or automatically when you push to your git repository.
 
 ## Requirements
 
@@ -12,23 +14,21 @@ _Automatically deploy the code using PHP and Git._
   access permissions for the `TMP_DIR` and `TARGET_DIR` locations on
   the _server machine_.
 * If the Git repo you wish to deploy is private, the system user running PHP
-  also needs to have the right SSH keys to access the remote repository.
+  also needs to have the right SSH keys to access the remote repository. See [the Github deploy keys help page](https://help.github.com/articles/managing-deploy-keys)
 
 ## Usage
 
- * Configure the script and put it somewhere that's accessible from the
-   Internet. The prefered way to configure it is to use `deploy-config.php` file.
-   Rename `deploy-config.example.php` to `deploy-config.php` and edit the
-   configuration options there. That way, you won't have to edit the configuration
-   again if you download the new version of `deploy.php`.
+ * Usually you'll want to put the script somewhere that's accessible from the
+   Internet. You can either `git clone git@github.com:sintjansbrug/php-git-deploy.git`
+   or download one of the releases.
+ * Rename `deploy-config.example.php` to `deploy-config.php` and edit the
+   configuration options there to suit your needs.
  * Configure your git repository to call this script when the code is updated.
    The instructions for GitHub and Bitbucket are below.
 
 ### GitHub
 
- 1. _(This step is only needed for private repositories)_ Go to
-    `https://github.com/USERNAME/REPOSITORY/settings/keys` and add your server
-    SSH key.
+ 1. _(This step is only needed for private repositories)_ Give your server access to your repository. You'll usually want to do this with a [https://help.github.com/articles/managing-deploy-keys#deploy-keys](deploy key).
  1. Go to `https://github.com/USERNAME/REPOSITORY/settings/hooks`.
  1. Click **Add webhook** in the **Webhooks** panel.
  1. Enter the **Payload URL** for your deployment script e.g. `http://example.com/deploy.php?sat=YourSecretAccessTokenFromDeployFile`.
@@ -54,7 +54,7 @@ _Automatically deploy the code using PHP and Git._
 ```sh
 #!/bin/sh
 echo "Triggering the code deployment ..."
-wget -q -O /dev/null http://example.com/deploy.php?sat=YourSecretAccessTokenFromDeployFile
+php /path/to/deploy.php
 ```
 
 ## Done!
@@ -71,12 +71,10 @@ For more info, read the source of `deploy.php`.
    on the same server that the script is running e.g. `define('TARGET_DIR',
    'username@example.com:/full/path/to/target_dir/');` is going to work as long
    as the user has the right SSH keys and access permissions.
- * You can have multiple scripts with different configurations. Simply rename
-   the `deploy.php` to something else, for example `deploy_master.php` and
-   `deploy_develop.php` and configure them separately. In that case, the
-   configuration files need to be named `deploy_master-config.php` and
-   `deploy_develop-config.php` respectively.
+ * You can deploy multiple branches with the same script even based on regular expressions! Take a look at the `$DEPLOYMENTS` configuration option.
+   If you want to deploy from different repositories, you can copy `deploy.php` to something else, for example `deploy_site2.php`. In that case, the configuration files needs to be named `deploy_site2-config.php`
 
 ---
 
+_Forked from [markomarkovic/simple-git-deploy](https://github.com/markomarkovic/simple-php-git-deploy)
 _Inspired by [a Gist by oodavid](https://gist.github.com/1809044)_
