@@ -77,4 +77,5 @@ For more info, read the source of `deploy.php`.
 ---
 
 _Forked from [markomarkovic/simple-git-deploy](https://github.com/markomarkovic/simple-php-git-deploy)
+
 _Inspired by [a Gist by oodavid](https://gist.github.com/1809044)_
