@@ -246,12 +246,16 @@ function execute_command($command, $error_recovery_command = "", $return_output 
 	}
 }
 
+function access_allowed() {
+	return php_sapi_name() == "cli" || (isset($_GET['sat']) && $_GET['sat'] === SECRET_ACCESS_TOKEN && SECRET_ACCESS_TOKEN !== 'BetterChangeMeNowOrSufferTheConsequences');
+}
+
 // ===========================================[ Function definitions end ]===
 
 // ===========================================[ Start of script ]===
 
 // If there's authorization error, set the correct HTTP header.
-if (!isset($_GET['sat']) || $_GET['sat'] !== SECRET_ACCESS_TOKEN || SECRET_ACCESS_TOKEN === 'BetterChangeMeNowOrSufferTheConsequences') {
+if (!access_allowed()) {
 	header('HTTP/1.0 403 Forbidden');
 }
 ?>
@@ -272,11 +276,11 @@ h2, .error { color: #c33; }
 </head>
 <body>
 <?php
-if (!isset($_GET['sat']) || $_GET['sat'] !== SECRET_ACCESS_TOKEN) {
-	die('<h2>ACCESS DENIED!</h2>');
-}
 if (SECRET_ACCESS_TOKEN === 'BetterChangeMeNowOrSufferTheConsequences') {
 	die("<h2>You're suffering the consequences!<br>Change the SECRET_ACCESS_TOKEN from it's default value!</h2>");
+}
+if (!access_allowed()) {
+	die('<h2>ACCESS DENIED!</h2>');
 }
 ?>
 <pre>
